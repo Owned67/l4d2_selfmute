@@ -5,7 +5,7 @@
 
 #pragma semicolon 1
 
-#define L4D2SELFM_VERSION   "0.3"
+#define L4D2SELFM_VERSION   "0.4"
 
 public Plugin:myinfo = {
     name = "L4D2 Self Mute",
@@ -96,7 +96,7 @@ public Action:OnChatMessage(&author, Handle:recipients, String:name[], String:me
 		client = GetArrayCell(recipients, i);
 		if ((client < 0) || (client > MaxClients))
 		{
-			LogError("[Ignore list] Warning: client is out of bounds: %d, Try updating SCP", client);
+			LogError("[L4D2 Self Mute] Warning: client is out of bounds: %d, Try updating SCP", client);
 			i++;
 			continue;
 		}

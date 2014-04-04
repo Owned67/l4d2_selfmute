@@ -5,12 +5,12 @@
 
 #pragma semicolon 1
 
-#define L4D2SELFM_VERSION   "0.2"
+#define L4D2SELFM_VERSION   "0.4"
 
 public Plugin:myinfo = {
     name = "L4D2 Self Mute",
     author = "Blade & Chdata",
-    description = "Allows a player to local mute their text chat.",
+    description = "Allows a player to local mute another client's text and voice chat.",
     version = L4D2SELFM_VERSION,
     url = "https://github.com/thebladeee/l4d2_selfmute"
 };
@@ -44,9 +44,9 @@ public OnPluginStart()
 
 	LoadTranslations("common.phrases"); //ignore <player>
 
-	RegConsoleCmd("sm_smute", Command_Ignore, "Usage: sm_ignore <#userid|name>\nSet target's chat and voice to be ignored.");
+	RegConsoleCmd("sm_smute", Command_Ignore, "Usage: sm_smute <#userid|name>\nSet target's chat and voice to be ignored.");
 
-	RegConsoleCmd("sm_sunmute", Command_UnIgnore, "Usage: sm_unignore <#userid|name>\nUnignore target.");
+	RegConsoleCmd("sm_sunmute", Command_UnIgnore, "Usage: sm_sunmute <#userid|name>\nUnmutes target.");
 }
 
 /*
@@ -96,7 +96,7 @@ public Action:OnChatMessage(&author, Handle:recipients, String:name[], String:me
 		client = GetArrayCell(recipients, i);
 		if ((client < 0) || (client > MaxClients))
 		{
-			LogError("[Ignore list] Warning: client is out of bounds: %d, Try updating SCP", client);
+			LogError("[L4D2 Self Mute] Warning: client is out of bounds: %d, Try updating SCP", client);
 			i++;
 			continue;
 		}
@@ -172,16 +172,6 @@ stock ProcessIgnore(client, const bool:chat = false, const bool:voice = false, c
 
 ToggleIgnoreStatus(const client, const target, const bool:chat, const bool:voice, const which, const bool:bTargetAll)
 {
-	if (GetUserFlagBits(target) & ADMFLAG_SLAY)
-	{
-		if (!bTargetAll)
-		{
-			ReplyToCommand(client, "[SM] You cannot ignore admins.");
-		}
-
-		return;
-	}
-
 	if (which & 1)
 	{
 		IgnoreMatrix[client][target][Chat] = chat;
