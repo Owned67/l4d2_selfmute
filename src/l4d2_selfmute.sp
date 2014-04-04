@@ -10,7 +10,7 @@
 public Plugin:myinfo = {
     name = "L4D2 Self Mute",
     author = "Blade & Chdata",
-    description = "Allows a player to local mute their text chat.",
+    description = "Allows a player to local mute another client's text and voice chat.",
     version = L4D2SELFM_VERSION,
     url = "https://github.com/thebladeee/l4d2_selfmute"
 };
