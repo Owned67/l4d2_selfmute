@@ -1,17 +1,11 @@
 #include <sourcemod>
 #include <sdktools>
-#include <clientprefs>
 
 #include <scp>
 
 #pragma semicolon 1
 
-#define L4D2SELFM_VERSION   "0.5"
-
-#define COOKIE_SMUTE	    0
-#define COOKIE_NUM_COOKIES  1
-
-new Handle:g_cookies[COOKIE_NUM_COOKIES];
+#define L4D2SELFM_VERSION   "0.4"
 
 public Plugin:myinfo = {
     name = "L4D2 Self Mute",
@@ -49,11 +43,6 @@ public OnPluginStart()
     );
 
 	LoadTranslations("common.phrases"); //ignore <player>
-	
-	g_cookies[COOKIE_SMUTE] = RegClientCookie(
-	"l4d2selfmute",
-	"L4D2 Self Mute Status",
-	CookieAccess_Protected);
 
 	RegConsoleCmd("sm_smute", Command_Ignore, "Usage: sm_smute <#userid|name>\nSet target's chat and voice to be ignored.");
 
@@ -177,15 +166,6 @@ stock ProcessIgnore(client, const bool:chat = false, const bool:voice = false, c
 
 		ReplyToCommand(client, s);
 	}
-	
-	switch (Action) {
-	case Command_Ignore: {
-	    SetClientCookie(Target[buffersize], g_cookies[COOKIE_SMUTE], "1");
-	}
-	case Command_UnIgnore: {
-	    SetClientCookie(Target[buffersize], g_cookies[COOKIE_SMUTE], "0");
-	}
-    }
 
 	return;
 }
@@ -239,24 +219,6 @@ public Action:Command_UnIgnore(client, args)
 	ProcessIgnore(client, false, false, 3);
 
 	return Plugin_Handled;
-}
-
-public OnClientCookiesCached(client) {
-}
-
-public OnClientPostAdminCheck(client) {
-    if (AreClientCookiesCached(client)) {
-	ProcessCookies(client);
-    }
-}
-
-stock ProcessCookies(client) {
-    decl String:cookie[32];
-
-    GetClientCookie(client, g_cookies[COOKIE_SMUTE], cookie, sizeof(cookie));
-    if (StrEqual(cookie, "1")) {
-	ProcessIgnore(client, true, true, 3);
-    }
 }
 
 /*
